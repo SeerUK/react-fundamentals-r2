@@ -1,34 +1,44 @@
+// @flow
 // Lesson 10: Component Lifecycle - Mounting Usage
 
 import React from "react";
 import ReactDOM from "react-dom";
 
+type AppState = {
+    val: number,
+    m: number
+};
+
 class App extends React.Component {
+    state: AppState;
+    inc: number;
+
     constructor() {
         super();
 
         this.state = {
-            val: 0
+            val: 0,
+            m: 1
         };
 
         this.update = this.update.bind(this);
     }
 
-    update() {
+    update(): void {
         this.setState({
             val: this.state.val + 1
         })
     }
 
-    componentWillMount() {
+    componentWillMount(): void {
         this.setState({ m: 2 });
     }
 
-    componentDidMount() {
+    componentDidMount(): void {
         this.inc = setInterval(this.update, 500);
     }
 
-    componentWillUnmount() {
+    componentWillUnmount(): void {
         clearInterval(this.inc);
     }
 

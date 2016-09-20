@@ -2,6 +2,7 @@ const path = require("path");
 const webpack = require("webpack");
 
 // Plugins
+const FlowStatusWebpackPlugin = require("flow-status-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 function buildConfiguration() {
@@ -46,6 +47,7 @@ function buildConfiguration() {
                 exclude: /node_modules/,
                 loader: "babel",
                 query: {
+                    plugins: [ "transform-flow-strip-types" ],
                     presets: [ "es2015", "react" ]
                 }
             }
@@ -72,6 +74,10 @@ function buildConfiguration() {
         new HtmlWebpackPlugin({
             template: "./src/web/index.html",
             chunksSortMode: "dependency"
+        }),
+        new FlowStatusWebpackPlugin({
+            failOnError: true,
+            quietSuccess: true
         })
     ];
 
