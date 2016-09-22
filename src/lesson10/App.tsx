@@ -1,17 +1,17 @@
-// @flow
 // Lesson 10: Component Lifecycle - Mounting Usage
 
-import React from "react";
-import ReactDOM from "react-dom";
+import * as React from "react";
+import * as ReactDOM from "react-dom";
+import Timer = NodeJS.Timer;
 
-type AppState = {
-    val: number,
-    m: number
-};
+interface AppState {
+    val: number;
+    m: number;
+}
 
-class App extends React.Component {
-    state: AppState;
-    inc: number;
+class App extends React.Component<any, AppState> {
+    public state: AppState;
+    private inc: Timer;
 
     constructor() {
         super();
@@ -27,11 +27,11 @@ class App extends React.Component {
     update(): void {
         this.setState({
             val: this.state.val + 1
-        })
+        } as AppState)
     }
 
     componentWillMount(): void {
-        this.setState({ m: 2 });
+        this.setState({ m: 2 } as AppState);
     }
 
     componentDidMount(): void {
@@ -49,24 +49,20 @@ class App extends React.Component {
     }
 }
 
-export default class Wrapper extends React.Component {
-    constructor() {
-        super();
-    }
-
-    mount() {
+export default class Wrapper extends React.Component<any, any> {
+    private static mount() {
         ReactDOM.render(<App />, document.getElementById("mounter"));
     }
 
-    unmount() {
+    private static unmount() {
         ReactDOM.unmountComponentAtNode(document.getElementById("mounter"));
     }
 
     render() {
         return (
             <div>
-                <button onClick={this.mount.bind(this)}>Mount</button>
-                <button onClick={this.unmount.bind(this)}>Unmount</button>
+                <button onClick={Wrapper.mount.bind(this)}>Mount</button>
+                <button onClick={Wrapper.unmount.bind(this)}>Unmount</button>
                 <div id="mounter"></div>
             </div>
         );

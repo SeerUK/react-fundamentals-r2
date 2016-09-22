@@ -2,7 +2,6 @@ const path = require("path");
 const webpack = require("webpack");
 
 // Plugins
-const FlowStatusWebpackPlugin = require("flow-status-webpack-plugin");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
 
 function buildConfiguration() {
@@ -13,8 +12,9 @@ function buildConfiguration() {
     config.devtool = "cheap-module-source-map";
 
     config.entry = {
-        "vendor": "./src/vendor.jsx",
-        "main": "./src/main.jsx"
+        "polyfills": "./src/polyfills.tsx",
+        "vendor": "./src/vendor.tsx",
+        "main": "./src/main.tsx"
     };
 
     config.output = {
@@ -47,9 +47,15 @@ function buildConfiguration() {
                 exclude: /node_modules/,
                 loader: "babel",
                 query: {
-                    plugins: [ "transform-flow-strip-types" ],
                     presets: [ "es2015", "react" ]
                 }
+            },
+
+            // TS / TSX
+            {
+                test: /\.tsx?$/,
+                exclude: /node_modules/,
+                loaders: [ "awesome-typescript" ]
             }
         ]
     };
@@ -62,7 +68,7 @@ function buildConfiguration() {
         }),
         new webpack.optimize.OccurenceOrderPlugin(true),
         new webpack.optimize.CommonsChunkPlugin({
-            name: [ "main", "vendor" ]
+            name: [ "main", "vendor", "polyfills" ]
         }),
         new webpack.optimize.UglifyJsPlugin({
             mangle: true,
@@ -74,16 +80,12 @@ function buildConfiguration() {
         new HtmlWebpackPlugin({
             template: "./src/web/index.html",
             chunksSortMode: "dependency"
-        }),
-        new FlowStatusWebpackPlugin({
-            failOnError: true,
-            quietSuccess: true
         })
     ];
 
     config.resolve = {
         cache: true,
-        extensions: [ "", ".js", ".jsx", ".css", ".html" ],
+        extensions: [ "", ".js", ".ts", ".tsx", ".css", ".html" ],
         root: [ path.join(__dirname, "src") ]
     };
 
