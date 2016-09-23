@@ -70,13 +70,13 @@ function buildConfiguration() {
         new webpack.optimize.CommonsChunkPlugin({
             name: [ "main", "vendor", "polyfills" ]
         }),
-        new webpack.optimize.UglifyJsPlugin({
-            mangle: true,
-            minimize: true,
-            compress: {
-                warnings: false
-            }
-        }),
+        // new webpack.optimize.UglifyJsPlugin({
+        //     mangle: true,
+        //     minimize: true,
+        //     compress: {
+        //         warnings: false
+        //     }
+        // }),
         new HtmlWebpackPlugin({
             template: "./src/web/index.html",
             chunksSortMode: "dependency"

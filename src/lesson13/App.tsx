@@ -1,14 +1,6 @@
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 
-interface AppState {
-    red: number;
-}
-
-interface AppControls {
-    red?: NumInput
-}
-
 export default class App extends React.Component<any, AppState> {
     public controls: AppControls = {};
 
@@ -17,7 +9,9 @@ export default class App extends React.Component<any, AppState> {
 
         this.update = this.update.bind(this);
         this.state = {
-            red: 0
+            red: 0,
+            green: 0,
+            blue: 0
         };
     }
 
@@ -26,15 +20,27 @@ export default class App extends React.Component<any, AppState> {
     }
 
     public update() {
-        let control = this.controls.red.controls.input;
-        let value = ReactDOM.findDOMNode<HTMLInputElement>(control).value;
+        let redControl = this.controls.red.controls.input;
+        let greenControl = this.controls.green.controls.input;
+        let blueControl = this.controls.blue.controls.input;
+
+        let redValue = ReactDOM.findDOMNode<HTMLInputElement>(redControl).value;
+        let greenValue = ReactDOM.findDOMNode<HTMLInputElement>(greenControl).value;
+        let blueValue = ReactDOM.findDOMNode<HTMLInputElement>(blueControl).value;
 
         this.setState({
-            red: parseInt(value, 10)
+            red: parseInt(redValue, 10),
+            green: parseInt(greenValue, 10),
+            blue: parseInt(blueValue, 10)
         });
     }
 
     public render() {
+        let style = {
+            backgroundColor: `rgb(${this.state.red}, ${this.state.green}, ${this.state.blue})`,
+            color: "white"
+        };
+
         return (
             <div>
                 <NumInput
@@ -47,25 +53,33 @@ export default class App extends React.Component<any, AppState> {
                     label="Red"
                     update={this.update}
                 />
+                <NumInput
+                    ref={(input) => this.controls.green = input}
+                    type="range"
+                    min={0}
+                    max={255}
+                    step={5}
+                    value={this.state.green}
+                    label="Green"
+                    update={this.update}
+                />
+                <NumInput
+                    ref={(input) => this.controls.blue = input}
+                    type="range"
+                    min={0}
+                    max={255}
+                    step={5}
+                    value={this.state.blue}
+                    label="Blue"
+                    update={this.update}
+                />
+
+                <div style={style}>
+                    Hello, World!
+                </div>
             </div>
         );
     }
-}
-
-type NumInputTypes = "number" | "range";
-
-interface NumInputProps {
-    type: NumInputTypes,
-    min?: number,
-    max?: number,
-    step?: number,
-    value?: number,
-    update: React.FormEventHandler<HTMLInputElement>,
-    label?: string
-}
-
-interface NumInputControls {
-    input?: any
 }
 
 class NumInput extends React.Component<NumInputProps, any> {
@@ -101,4 +115,32 @@ class NumInput extends React.Component<NumInputProps, any> {
             </div>
         );
     }
+}
+
+interface AppState {
+    red: number;
+    green: number;
+    blue: number;
+}
+
+interface AppControls {
+    red?: NumInput;
+    green?: NumInput;
+    blue?: NumInput;
+}
+
+type NumInputTypes = "number" | "range";
+
+interface NumInputProps {
+    type: NumInputTypes,
+    min?: number,
+    max?: number,
+    step?: number,
+    value?: number,
+    update: React.FormEventHandler<HTMLInputElement>,
+    label?: string
+}
+
+interface NumInputControls {
+    input?: any
 }
